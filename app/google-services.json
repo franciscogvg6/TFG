@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "307231620980",
+    "project_id": "kepido-904ab",
+    "storage_bucket": "kepido-904ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307231620980:android:dec3e3bae65d40c21f7621",
+        "android_client_info": {
+          "package_name": "com.example.tfg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307231620980-o6reeubjqc75h7ug5q4upli4e7a5risg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMAKChzhSW7u7n6WeBJvKJ-UoiNUq4Cew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307231620980-o6reeubjqc75h7ug5q4upli4e7a5risg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
