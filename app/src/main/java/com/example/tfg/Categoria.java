@@ -1,17 +1,20 @@
 package com.example.tfg;
 
 public class Categoria {
-    private String categoria;
 
-    public Categoria(String categoria) {
-        this.categoria = categoria;
+    public Categoria() {
+    }
+    private String nombre;
+
+    public Categoria(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getCategoria() {
-        return categoria;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

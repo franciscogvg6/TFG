@@ -1,8 +1,11 @@
 package com.example.tfg;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.os.AsyncTask;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 
 
 
@@ -40,8 +48,50 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         holder.nombreTextView.setText(producto.getNombre());
         holder.precioTextView.setText(producto.getPrecio());
+
+        // Cargar la imagen utilizando AsyncTask
+        new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
+
     }
 
+    private static class CargarImagenTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        CargarImagenTask(ImageView imageView) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... urls) {
+            if (urls.length > 0) {
+                try {
+                    return cargarImagenDesdeURL(urls[0]);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                // Manejar el error de carga de imagen
+            }
+        }
+
+
+        private Bitmap cargarImagenDesdeURL(String urlString) throws IOException {
+            URL url = new URL(urlString);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            return BitmapFactory.decodeStream(input);
+        }
+    }
     @Override
     public int getItemCount() {
         return productosList.size();

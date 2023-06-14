@@ -83,7 +83,7 @@ public class CategoriaAdapter extends RecyclerView.Adapter<CategoriaAdapter.View
         }
 
         public void bind(Categoria categoria, int position, OnItemClickListener listener) {
-            textViewCategoria.setText(categoria.getCategoria());
+            textViewCategoria.setText(categoria.getNombre());
         }
     }
 }

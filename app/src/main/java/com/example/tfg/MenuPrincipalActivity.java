@@ -52,7 +52,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         productosList = new ArrayList<>();
 
         // Simular datos de prueba
-        cargarDatosDePrueba();
+        //cargarDatosDePrueba();
 
         // Configurar el RecyclerView de categorías
         categoriaAdapter = new CategoriaAdapter(categoriasList, R.layout.rv_render);
@@ -64,42 +64,73 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
+        // Obtener las categorías desde la base de datos
+        obtenerCategoriasDesdeFirebase();
+
+
         // Manejar el evento de clic en una categoría
         categoriaAdapter.setOnItemClickListener(new CategoriaAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Categoria categoria, int position) {
-                textViewCategoriaSeleccionada.setText(categoria.getCategoria());
-                obtenerProductosPorCategoria(categoria);
+                textViewCategoriaSeleccionada.setText(categoria.getNombre());
+                obtenerProductosDesdeFirebase(categoria);
+            }
+        });
+
+        Categoria categoriaInicial = new Categoria("Cervezas");
+        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+        obtenerProductosDesdeFirebase(categoriaInicial);
+    }
+
+    private void obtenerCategoriasDesdeFirebase() {
+        Query query = FirebaseDatabase.getInstance().getReference().child("Categorias");
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                categoriasList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String nombre = snapshot.child("Nombre").getValue(String.class);
+                    Categoria categoria = new Categoria(nombre);
+                    categoriasList.add(categoria);
+                }
+                categoriaAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Manejar error de lectura de la base de datos
+            }
+        });
+    }
+
+    private void obtenerProductosDesdeFirebase(Categoria categoria) {
+        Query query = FirebaseDatabase.getInstance().getReference().child("Productos")
+                .orderByChild("Categoria").equalTo(categoria.getNombre());
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                productosList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                    String nombre = snapshot.child("Nombre").getValue(String.class);
+                    String precio = snapshot.child("Precio").getValue(String.class);
+                    String foto = snapshot.child("Foto").getValue(String.class);
+                    String categoria = snapshot.child("Categoria").getValue(String.class);
+                    Log.d("FirebaseData", "Nombre: " + nombre + ", Precio: " + precio + ", Foto: " + foto + ", Categoria: " + categoria);
+                    Producto producto = new Producto("",nombre,precio,foto,categoria);
+                    productosList.add(producto);
+                }
+                productoAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("FirebaseData", "Error al leer los productos desde Firebase: " + databaseError.getMessage());
             }
         });
     }
 
 
-    private void cargarDatosDePrueba() {
-        // Cargar categorías de prueba
-        categoriasList.add(new Categoria("Cervezas"));
-        categoriasList.add(new Categoria("Vinos"));
-        categoriasList.add(new Categoria("Licores"));
-        categoriasList.add(new Categoria("Refrescos"));
-
-        // Cargar productos de prueba
-        productosList.add(new Producto("Cerveza 1", "Cruzcampo", "10.99", "", "Cervezas"));
-        productosList.add(new Producto("Cerveza 2", "Estrella","15.99","", "Cervezas"));
-        productosList.add(new Producto("Vino 1", "Cruzcampo","5.99","", "Vinos"));
-
-    }
-
-    private void obtenerProductosPorCategoria(Categoria categoria) {
-        ArrayList<Producto> productosPorCategoria = new ArrayList<>();
-        // Recorrer la lista de productos y filtrar los que pertenecen a la categoría seleccionada
-        for (Producto producto : productosList) {
-            if (producto.getCategoria().equals(categoria.getCategoria())) {
-                productosPorCategoria.add(producto);
-            }
-        }
-        // Actualizar el adaptador de productos con la nueva lista filtrada
-        productoAdapter.updateProductos(productosPorCategoria);
-    }
 
     public void mostrarMensajeTotalProductos(View view) {
         int totalProductos = productoAdapter.getItemCount();
