@@ -29,6 +29,8 @@ public class PerfilActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextNombre;
     private EditText editTextApellidos;
+    private EditText editTextLocalidad;
+    private EditText editTextFechaNacimiento;
     private Button buttonEditar;
 
     private Button buttonEliminar;
@@ -52,6 +54,9 @@ public class PerfilActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextTextPersonName8);
         editTextNombre = findViewById(R.id.editTextTextPersonName9);
         editTextApellidos = findViewById(R.id.editTextTextPersonName10);
+        editTextLocalidad = findViewById(R.id.editTextTextPassword3);
+        editTextFechaNacimiento = findViewById(R.id.editTextTextPassword2);
+
         buttonEditar = findViewById(R.id.button4);
         buttonEliminar = findViewById(R.id.button5);
         regresar = findViewById(R.id.atras);
@@ -93,9 +98,13 @@ public class PerfilActivity extends AppCompatActivity {
                     if (snapshot.exists()) {
                         String nombre = snapshot.child("Nombre").getValue(String.class);
                         String apellidos = snapshot.child("Apellidos").getValue(String.class);
+                        String localidad = snapshot.child("Localidad").getValue(String.class);
+                        String fechaNacimiento = snapshot.child("Fecha de Nacimiento").getValue(String.class);
 
                         editTextNombre.setText(nombre);
                         editTextApellidos.setText(apellidos);
+                        editTextLocalidad.setText(localidad);
+                        editTextFechaNacimiento.setText(fechaNacimiento);
                     }
                 }
 
@@ -114,10 +123,15 @@ public class PerfilActivity extends AppCompatActivity {
 
         String nombre = editTextNombre.getText().toString().trim();
         String apellidos = editTextApellidos.getText().toString().trim();
+        String localidad = editTextLocalidad.getText().toString().trim();
+        String fechaNacimiento = editTextFechaNacimiento.getText().toString().trim();
+
 
         Map<String, Object> updates = new HashMap<>();
         updates.put("Nombre", nombre);
         updates.put("Apellidos", apellidos);
+        updates.put("Localidad", localidad);
+        updates.put("Fecha de Nacimiento", fechaNacimiento);
 
         usuarioRef.updateChildren(updates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -145,6 +159,9 @@ public class PerfilActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                // Cerrar la sesión actual
+                                FirebaseAuth.getInstance().signOut();
+
                                 Toast.makeText(PerfilActivity.this, "Perfil eliminado correctamente", Toast.LENGTH_SHORT).show();
 
                                 // Redirigir al usuario a la pantalla de inicio de sesión
@@ -153,12 +170,14 @@ public class PerfilActivity extends AppCompatActivity {
                                 startActivity(intent);
                                 finish();
                             } else {
-                                Toast.makeText(PerfilActivity.this, "Error al eliminar el perfil", Toast.LENGTH_SHORT).show();
+                                // Mostrar mensaje de error al eliminar el usuario de la autenticación
+                                Toast.makeText(PerfilActivity.this, "Error al eliminar el usuario de la autenticación: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
-                    Toast.makeText(PerfilActivity.this, "Error al eliminar el perfil", Toast.LENGTH_SHORT).show();
+                    // Mostrar mensaje de error al eliminar el perfil de la base de datos
+                    Toast.makeText(PerfilActivity.this, "Error al eliminar el perfil de la base de datos: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
