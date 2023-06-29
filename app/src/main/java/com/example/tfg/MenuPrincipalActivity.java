@@ -37,6 +37,10 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     private ArrayList<Categoria> categoriasList;
     private ArrayList<Producto> productosList;
 
+    Button btn_cerrar_sesion;
+
+    Button btn_perfil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +84,24 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         Categoria categoriaInicial = new Categoria("Cervezas");
         textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
         obtenerProductosDesdeFirebase(categoriaInicial);
+
+        btn_cerrar_sesion = findViewById(R.id.button3);
+        btn_perfil = findViewById(R.id.perfil);
+        btn_cerrar_sesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(MenuPrincipalActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
+                irALogin();
+            }
+        });
+
+        btn_perfil.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                irAPerfil();
+            }
+        });
     }
 
     private void obtenerCategoriasDesdeFirebase() {
@@ -113,11 +135,14 @@ public class MenuPrincipalActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
                     String nombre = snapshot.child("Nombre").getValue(String.class);
-                    String precio = snapshot.child("Precio").getValue(String.class);
+                    double precio = snapshot.child("Precio").getValue(Double.class);
                     String foto = snapshot.child("Foto").getValue(String.class);
                     String categoria = snapshot.child("Categoria").getValue(String.class);
+                    String pid = snapshot.child("pid").getValue(String.class);
+                    String fecha = snapshot.child("fecha").getValue(String.class);
+                    String hora = snapshot.child("hora").getValue(String.class);
                     Log.d("FirebaseData", "Nombre: " + nombre + ", Precio: " + precio + ", Foto: " + foto + ", Categoria: " + categoria);
-                    Producto producto = new Producto("",nombre,precio,foto,categoria);
+                    Producto producto = new Producto(nombre,precio,foto,categoria,pid,fecha,hora);
                     productosList.add(producto);
                 }
                 productoAdapter.notifyDataSetChanged();
@@ -130,13 +155,19 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         });
     }
 
-
-
-    public void mostrarMensajeTotalProductos(View view) {
-        int totalProductos = productoAdapter.getItemCount();
-        String mensaje = "El total de productos es: " + totalProductos;
-        textViewCategoriaSeleccionada.setText(mensaje);
+    private void irALogin(){
+        Intent i = new Intent(this, RegistrarActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
+
+    private void irAPerfil() {
+        Intent i = new Intent(this, PerfilActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+
 
 
 }

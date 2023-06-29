@@ -47,7 +47,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         Producto producto = productosList.get(position);
 
         holder.nombreTextView.setText(producto.getNombre());
-        holder.precioTextView.setText(producto.getPrecio());
+        holder.precioTextView.setText(String.valueOf(producto.getPrecio()));
+
 
         // Cargar la imagen utilizando AsyncTask
         new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
