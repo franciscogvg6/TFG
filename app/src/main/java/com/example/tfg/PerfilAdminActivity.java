@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PerfilActivity extends AppCompatActivity {
+public class PerfilAdminActivity extends AppCompatActivity {
 
     private EditText editTextEmail;
     private EditText editTextNombre;
@@ -49,12 +49,12 @@ public class PerfilActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil);
+        setContentView(R.layout.activity_perfiladmin);
 
         // Inicializar Firebase Auth y Database
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Usuarios");
+        mDatabase = FirebaseDatabase.getInstance().getReference("Admin");
 
         editTextEmail = findViewById(R.id.editTextTextPersonName8);
         editTextNombre = findViewById(R.id.editTextTextPersonName9);
@@ -65,19 +65,13 @@ public class PerfilActivity extends AppCompatActivity {
 
         buttonEditar = findViewById(R.id.button4);
         buttonEliminar = findViewById(R.id.button5);
-        regresar = findViewById(R.id.atras);
+
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             correo = bundle.getString("correo");
         }
 
-        regresar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
 
         obtenerDatosUsuarioActivo();
 
@@ -161,11 +155,11 @@ public class PerfilActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(PerfilActivity.this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PerfilAdminActivity.this, "Perfil actualizado correctamente", Toast.LENGTH_SHORT).show();
                                 EnviarAlInicio();
                                 dialog.dismiss();
                             } else {
-                                Toast.makeText(PerfilActivity.this, "Error al actualizar el perfil", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PerfilAdminActivity.this, "Error al actualizar el perfil", Toast.LENGTH_SHORT).show();
                                 dialog.dismiss();
                             }
                         }
@@ -189,29 +183,29 @@ public class PerfilActivity extends AppCompatActivity {
                                 // Cerrar la sesión actual
                                 FirebaseAuth.getInstance().signOut();
 
-                                Toast.makeText(PerfilActivity.this, "Perfil eliminado correctamente", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PerfilAdminActivity.this, "Perfil eliminado correctamente", Toast.LENGTH_SHORT).show();
 
                                 // Redirigir al usuario a la pantalla de inicio de sesión
-                                Intent intent = new Intent(PerfilActivity.this, RegistrarActivity.class);
+                                Intent intent = new Intent(PerfilAdminActivity.this, RegistrarAdminActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
                             } else {
                                 // Mostrar mensaje de error al eliminar el usuario de la autenticación
-                                Toast.makeText(PerfilActivity.this, "Error al eliminar el usuario de la autenticación: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(PerfilAdminActivity.this, "Error al eliminar el usuario de la autenticación: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                 } else {
                     // Mostrar mensaje de error al eliminar el perfil de la base de datos
-                    Toast.makeText(PerfilActivity.this, "Error al eliminar el perfil de la base de datos: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PerfilAdminActivity.this, "Error al eliminar el perfil de la base de datos: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
     private void EnviarAlInicio() {
-        Intent intent = new Intent(PerfilActivity.this, MenuPrincipalActivity.class);
+        Intent intent = new Intent(PerfilAdminActivity.this, AdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

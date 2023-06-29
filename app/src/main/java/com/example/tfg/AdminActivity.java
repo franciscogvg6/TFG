@@ -27,17 +27,18 @@ import com.example.tfg.CategoriaAdapter.OnItemClickListener;
 
 import java.util.ArrayList;
 
-public class MenuPrincipalActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity {
+    private RecyclerView recyclerViewCategorias;
+    private RecyclerView recyclerViewProductos;
+    private CategoriaAdapter categoriaAdapter;
+
+    private String correo;
 
     private FirebaseAuth auth;
     private String currentUserId;
 
     private DatabaseReference userRef;
 
-    private String correo = "";
-    private RecyclerView recyclerViewCategorias;
-    private RecyclerView recyclerViewProductos;
-    private CategoriaAdapter categoriaAdapter;
     private ProductoAdapter productoAdapter;
 
     private TextView textViewCategoriaSeleccionada;
@@ -52,16 +53,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu_principal);
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            correo = bundle.getString("correo");
-        }
-
-        auth = FirebaseAuth.getInstance();
-        currentUserId = auth.getCurrentUser().getUid();
-        userRef = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+        setContentView(R.layout.activity_admin);
 
         // Inicializar las vistas
         recyclerViewCategorias = findViewById(R.id.rv);
@@ -81,7 +73,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render);
+        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_admin_render);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
@@ -108,7 +100,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(MenuPrincipalActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AdminActivity.this, "Sesión cerrada", Toast.LENGTH_SHORT).show();
                 irALogin();
             }
         });
@@ -119,51 +111,15 @@ public class MenuPrincipalActivity extends AppCompatActivity {
                 irAPerfil();
             }
         });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser firebaseUser = auth.getCurrentUser();
-        if (firebaseUser == null) {
-            EnviarAlLogin();
-        }else {
-            VerificarUsuarioExistente();
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            correo = bundle.getString("correo");
         }
-    }
 
-    private void VerificarUsuarioExistente() {
-        final String currentUserId = auth.getCurrentUser().getUid();
-        userRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.hasChild(currentUserId)) {
-                    EnviarAPerfil();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void EnviarAlLogin() {
-
-        Intent intent = new Intent(MenuPrincipalActivity.this, RegistrarActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        finish();
-    }
-
-    private void EnviarAPerfil() {
-        Intent intent = new Intent(MenuPrincipalActivity.this, PerfilActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra("correo", correo);
-        startActivity(intent);
-        finish();
-
+        auth = FirebaseAuth.getInstance();
+        currentUserId = auth.getCurrentUser().getUid();
+        userRef = FirebaseDatabase.getInstance().getReference().child("Admin");
     }
 
     private void obtenerCategoriasDesdeFirebase() {
@@ -218,15 +174,60 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     }
 
     private void irALogin(){
-        Intent i = new Intent(this, RegistrarActivity.class);
+        Intent i = new Intent(this, RegistrarAdminActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
 
     private void irAPerfil() {
-        Intent i = new Intent(this, PerfilActivity.class);
+        Intent i = new Intent(this, PerfilAdminActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser == null) {
+            EnviarAlLogin();
+        }else {
+            VerificarUsuarioExistente();
+        }
+    }
+
+    private void VerificarUsuarioExistente() {
+        final String currentUserId = auth.getCurrentUser().getUid();
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.hasChild(currentUserId)) {
+                    EnviarAPerfil();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void EnviarAlLogin() {
+
+        Intent intent = new Intent(AdminActivity.this, RegistrarAdminActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void EnviarAPerfil() {
+        Intent intent = new Intent(AdminActivity.this, PerfilAdminActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("correo", correo);
+        startActivity(intent);
+        finish();
+
     }
 
 
