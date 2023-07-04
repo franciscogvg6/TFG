@@ -9,6 +9,7 @@ public class Producto {
 
     private String pid, fecha, hora;
 
+    public Producto(){}
 
 
     public Producto(String nombre, double precio, String foto, String categoria, String pid, String fecha, String hora) {

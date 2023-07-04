@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,6 +47,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     private ArrayList<Producto> productosList;
 
     Button btn_cerrar_sesion;
+
+    FloatingActionButton btn_carr;
 
     Button btn_perfil;
 
@@ -104,6 +107,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
+        btn_carr= findViewById(R.id.carr);
         btn_cerrar_sesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +121,14 @@ public class MenuPrincipalActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 irAPerfil();
+            }
+        });
+
+
+        btn_carr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                irACarrito();
             }
         });
     }
@@ -225,6 +237,12 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+    private void irACarrito() {
+        Intent i = new Intent(this, CarritoActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }

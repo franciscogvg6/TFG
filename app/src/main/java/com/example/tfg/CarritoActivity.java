@@ -21,8 +21,15 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 
 public class CarritoActivity extends AppCompatActivity {
 
@@ -54,10 +61,7 @@ public class CarritoActivity extends AppCompatActivity {
         Siguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(CarritoActivity.this, ConfirmarOrdenActivity.class);
-                intent.putExtra("Total", String.valueOf(PrecioTotalD));
-                startActivity(intent);
-                finish();
+                ConfirmarOrden();
             }
         });
     }
@@ -79,11 +83,11 @@ public class CarritoActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull CarritoViewHolder holder, int position, @NonNull Carrito model){
 
                 holder.carrProductoNombre.setText(model.getNombre());
-                holder.carrProductoCantidad.setText(model.getCantidad());
-                holder.carrProductoPrecio.setText(model.getPrecio());
+                holder.carrProductoCantidad.setText("Cantidad: " + model.getCantidad());
+                holder.carrProductoPrecio.setText("Precio: " + model.getPrecio() + " €");
                 double UnTipoPrecio = (Double.valueOf(model.getPrecio()))*Integer.valueOf(model.getCantidad());
                 PrecioTotalD = PrecioTotalD + UnTipoPrecio;
-                TotalPrecio.setText("Total: "+String.valueOf(PrecioTotalD));
+                TotalPrecio.setText("Total: "+String.valueOf(PrecioTotalD) + " €");
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -141,6 +145,77 @@ public class CarritoActivity extends AppCompatActivity {
     }
 
     private void VerificarEstadoOrden() {
+        DatabaseReference ordenRef;
+        ordenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(CurrentUserId);
+
+        ordenRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String estado = snapshot.child("estado").getValue().toString();
+                    if (estado.equals("Enviado")) {
+                        TotalPrecio.setText("Su pedido fue enviado");
+                        recyclerView.setVisibility(View.GONE);
+                        mensaje.setText("Su pedido se enviará pronto");
+                        mensaje.setVisibility(View.VISIBLE);
+                        Siguiente.setVisibility(View.GONE);
+                    }else if (estado.equals("No Enviado")){
+                        TotalPrecio.setText("Su orden está siendo procesada");
+                        recyclerView.setVisibility(View.GONE);
+                        mensaje.setVisibility(View.VISIBLE);
+                        Siguiente.setVisibility(View.GONE);
+                        Toast.makeText(CarritoActivity.this, "Puedes comprar más productos cuando el anterior finalice", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    private void ConfirmarOrden() {
+        final String CurrentTime, CurrentDate;
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        CurrentDate = dateFormat.format(calendar.getTime());
+
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm:ss");
+        CurrentTime = dateFormat1.format(calendar.getTime());
+
+        final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(CurrentUserId);
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("fecha" , CurrentDate);
+        map.put("hora" , CurrentTime);
+        map.put("estado" , "No Enviado");
+
+        OrdenesRef.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    FirebaseDatabase.getInstance().getReference().child("Carrito")
+                            .child("Usuario Compra").child(CurrentUserId).removeValue()
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(CarritoActivity.this, "¡Orden realizada!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
 
     }
 

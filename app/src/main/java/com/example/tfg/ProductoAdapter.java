@@ -1,5 +1,6 @@
 package com.example.tfg;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
@@ -52,6 +53,16 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         // Cargar la imagen utilizando AsyncTask
         new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
+
+        holder.fotoImageView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), ProductoDetallesActivity.class);
+                intent.putExtra("pid", producto.getPid());
+                v.getContext().startActivity(intent);
+            }
+        });
 
     }
 
