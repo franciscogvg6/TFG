@@ -31,6 +31,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
     private Button agregarCarrito;
     private EditText numeroBoton;
     private ImageView productoImagen;
+
     TextView productoPrecio, productoNombre;
     private String productoID = "", estado="Normal" , CurrentUserID;
     private FirebaseAuth auth;
@@ -65,6 +66,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
+        VerificarEstadoOrden();
 
     }
 
@@ -87,11 +89,11 @@ public class ProductoDetallesActivity extends AppCompatActivity {
         map.put("hora", CurrentTime);
         map.put("cantidad", numeroBoton.getText().toString());
 
-        CartListRef.child("Usuario Compra").child("Productos").child(productoID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        CartListRef.child("Usuario Compra").child(CurrentUserID).child("Productos").child(productoID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    CartListRef.child("Administracion").child(CurrentUserID).child("Productos").child(productoID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    CartListRef.child("Admin").child(CurrentUserID).child("Productos").child(productoID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
@@ -114,11 +116,16 @@ public class ProductoDetallesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    Producto productos = snapshot.getValue(Producto.class);
-                    productoNombre.setText(productos.getNombre());
-                    productoPrecio.setText(String.valueOf(productos.getPrecio()));
-                    Picasso.get().load(productos.getFoto()).into(productoImagen);
+                    String nombre = snapshot.child("Nombre").getValue(String.class);
+                    double precio = snapshot.child("Precio").getValue(Double.class);
+                    String foto = snapshot.child("Foto").getValue(String.class);
+                    //productoNombre.setText(productos.getNombre());
+                    //productoPrecio.setText(String.valueOf(productos.getPrecio()));
+                    //Picasso.get().load(productos.getFoto()).into(productoImagen);
 
+                    productoNombre.setText(nombre);
+                    productoPrecio.setText(String.valueOf(precio));
+                    Picasso.get().load(foto).into(productoImagen);
                 }
             }
 

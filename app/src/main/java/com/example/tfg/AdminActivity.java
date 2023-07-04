@@ -50,6 +50,8 @@ public class AdminActivity extends AppCompatActivity {
 
     Button btn_perfil;
 
+    Button btn_ordenes;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +98,7 @@ public class AdminActivity extends AppCompatActivity {
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
+        btn_ordenes = findViewById(R.id.ordenes);
         btn_cerrar_sesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +112,13 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 irAPerfil();
+            }
+        });
+
+        btn_ordenes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                irAOrdenes();
             }
         });
 
@@ -181,6 +191,12 @@ public class AdminActivity extends AppCompatActivity {
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilAdminActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+    }
+
+    private void irAOrdenes() {
+        Intent i = new Intent(this, OrdenActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
