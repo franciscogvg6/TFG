@@ -1,16 +1,29 @@
 package com.example.tfg;
 
+import java.util.HashMap;
+
 public class Ordenes {
 
-    private String nombre, estado, fecha, hora;
+    private String id, nombre, estado, fecha, hora;
+    private HashMap<String, ProductoOrden> productos;
 
     public Ordenes(){}
 
-    public Ordenes(String nombre, String estado, String fecha, String hora) {
+    public Ordenes(String nombre, String estado, String fecha, String hora, HashMap<String, ProductoOrden> productos) {
+        this.id = id;
         this.nombre = nombre;
         this.estado = estado;
         this.fecha = fecha;
         this.hora = hora;
+        this.productos = productos;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -43,5 +56,13 @@ public class Ordenes {
 
     public void setHora(String hora) {
         this.hora = hora;
+    }
+
+    public HashMap<String, ProductoOrden> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(HashMap<String, ProductoOrden> productos) {
+        this.productos = productos;
     }
 }

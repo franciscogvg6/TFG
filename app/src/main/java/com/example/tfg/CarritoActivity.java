@@ -195,24 +195,49 @@ public class CarritoActivity extends AppCompatActivity {
         map.put("hora" , CurrentTime);
         map.put("estado" , "No Enviado");
 
+        DatabaseReference productosRef = OrdenesRef.child("productos");
+
+
         OrdenesRef.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    FirebaseDatabase.getInstance().getReference().child("Carrito")
-                            .child("Usuario Compra").child(CurrentUserId).removeValue()
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(CarritoActivity.this, "¡Orden realizada!", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);
-                                        finish();
-                                    }
+                    DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child("Carrito")
+                            .child("Usuario Compra").child(CurrentUserId);
+                    carritoRef.child("Productos").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                                    String productId = productSnapshot.getKey();
+                                    Carrito productoCarrito = productSnapshot.getValue(Carrito.class);
+
+                                    // Guarda el producto y su cantidad en la orden recién creada
+                                    productosRef.child(productId).setValue(productoCarrito)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        // Elimina el producto del carrito una vez que se ha añadido a la orden
+                                                        carritoRef.child("Productos").child(productId).removeValue();
+                                                    }
+                                                }
+                                            });
                                 }
-                            });
+                                // Aquí puedes mostrar un mensaje de éxito o realizar otras acciones después de completar la orden
+                                Toast.makeText(CarritoActivity.this, "¡Orden realizada!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            // Maneja el error si es necesario
+                        }
+                    });
                 }
             }
         });

@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_margin="10dp"
@@ -29,29 +29,24 @@
             android:layout_below="@+id/ordenuser"
             android:layout_marginTop="5dp"/>
 
-        <Button
-            android:id="@+id/verproductosorden"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_productos_orden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ordenfecha"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_below="@id/ordenfecha"
+            android:layout_marginTop="10dp" />
+
+        <Button
+            android:id="@+id/confirmar"
+            android:layout_width="300dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginEnd="32dp"
             android:background="@drawable/button_rounded"
-            android:textColor="#2B54BD"
-            android:backgroundTint="@color/white"
-            android:text="VER PRODUCTOS" />
-
-
-
-
-
-
-
-
-
-
+            android:layout_below="@id/recycler_productos_orden"
+            android:backgroundTint="#CA1616"
+            android:text="Enviada" />
 
 
 
