@@ -231,19 +231,16 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private void irALogin(){
         Intent i = new Intent(this, RegistrarActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
 
     private void irACarrito() {
         Intent i = new Intent(this, CarritoActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
 
