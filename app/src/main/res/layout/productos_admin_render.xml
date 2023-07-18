@@ -51,7 +51,14 @@
                 android:id="@+id/btnGuardarCambios"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Guardar" />
+                android:text="Editar" />
+
+            <Button
+                android:id="@+id/btnEliminar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#CA1616"
+                android:text="Eliminar" />
 
         </LinearLayout>
 

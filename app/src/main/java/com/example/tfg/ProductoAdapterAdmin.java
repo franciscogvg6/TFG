@@ -20,10 +20,10 @@ import java.net.URL;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
-public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
+public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAdmin.ProductoViewHolder> {
     private ArrayList<Producto> productosList;
     private int layout;
-    public ProductoAdapter(ArrayList<Producto> productosList, int layout) {
+    public ProductoAdapterAdmin(ArrayList<Producto> productosList, int layout) {
         this.productosList = productosList;
         this.layout = layout;
     }
@@ -57,8 +57,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         holder.btn_editar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
-
                 Intent intent = new Intent(v.getContext(), EditarProductoActivity.class);
                 intent.putExtra("pid", producto.getPid());
                 v.getContext().startActivity(intent);
@@ -106,7 +104,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         ImageView fotoImageView;
         TextView nombreTextView;
         TextView precioTextView;
-
         Button btn_editar;
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
