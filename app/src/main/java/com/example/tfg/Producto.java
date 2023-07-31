@@ -1,58 +1,56 @@
 package com.example.tfg;
 
 public class Producto {
-    private String nombre;
-    private double precio;
-    private String foto;
+    private String Nombre;
+    private double Precio;
+    private String Foto;
 
-    private String categoria;
+    private String Categoria;
 
     private String pid, fecha, hora;
 
     public Producto(){}
 
-
-    public Producto(String nombre, double precio, String foto, String categoria, String pid, String fecha, String hora) {
-        this.nombre = nombre;
-        this.precio = precio;
-        this.foto = foto;
-        this.categoria = categoria;
-        this.pid=pid;
-        this.fecha=fecha;
-        this.hora=hora;
-
+    public Producto(String Nombre, double Precio, String Foto, String Categoria, String pid, String fecha, String hora) {
+        this.Nombre = Nombre;
+        this.Precio = Precio;
+        this.Foto = Foto;
+        this.Categoria = Categoria;
+        this.pid = pid;
+        this.fecha = fecha;
+        this.hora = hora;
     }
 
     public String getNombre() {
-        return nombre;
+        return Nombre;
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        Nombre = nombre;
     }
 
     public double getPrecio() {
-        return precio;
+        return Precio;
     }
 
     public void setPrecio(double precio) {
-        this.precio = precio;
+        Precio = precio;
     }
 
     public String getFoto() {
-        return foto;
+        return Foto;
     }
 
     public void setFoto(String foto) {
-        this.foto = foto;
+        Foto = foto;
     }
 
     public String getCategoria() {
-        return categoria;
+        return Categoria;
     }
 
     public void setCategoria(String categoria) {
-        this.categoria = categoria;
+        Categoria = categoria;
     }
 
     public String getPid() {

@@ -39,7 +39,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private DatabaseReference userRef;
 
-    private ProductoAdapter productoAdapter;
+    private ProductoAdapterAdmin productoAdapter;
 
     private TextView textViewCategoriaSeleccionada;
 
@@ -51,6 +51,10 @@ public class AdminActivity extends AppCompatActivity {
     Button btn_perfil;
 
     Button btn_ordenes;
+
+    Button btn_anadir;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class AdminActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_admin_render);
+        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
@@ -99,6 +103,8 @@ public class AdminActivity extends AppCompatActivity {
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
         btn_ordenes = findViewById(R.id.ordenes);
+        btn_anadir = findViewById(R.id.anadir_prod);
+
         btn_cerrar_sesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,6 +125,13 @@ public class AdminActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 irAOrdenes();
+            }
+        });
+
+        btn_anadir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                irAAnadir();
             }
         });
 
@@ -196,6 +209,11 @@ public class AdminActivity extends AppCompatActivity {
 
     private void irAOrdenes() {
         Intent i = new Intent(this, OrdenActivity.class);
+        startActivity(i);
+    }
+
+    private void irAAnadir() {
+        Intent i = new Intent(this, NuevoProductoActivity.class);
         startActivity(i);
     }
 
