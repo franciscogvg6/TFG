@@ -57,6 +57,8 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         holder.btn_editar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+
+
                 Intent intent = new Intent(v.getContext(), EditarProductoActivity.class);
                 intent.putExtra("pid", producto.getPid());
                 v.getContext().startActivity(intent);
@@ -104,6 +106,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         ImageView fotoImageView;
         TextView nombreTextView;
         TextView precioTextView;
+
         Button btn_editar;
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);

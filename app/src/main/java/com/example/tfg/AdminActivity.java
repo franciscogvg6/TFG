@@ -39,7 +39,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private DatabaseReference userRef;
 
-    private ProductoAdapter productoAdapter;
+    private ProductoAdapterAdmin productoAdapter;
 
     private TextView textViewCategoriaSeleccionada;
 
@@ -79,7 +79,7 @@ public class AdminActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_admin_render);
+        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 

@@ -40,9 +40,9 @@ public class EditarProductoActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private FirebaseUser mUser;
 
-    private Button buttonEditar;
+    private Button buttonEditar, buttonEliminar;
 
-    private String productoID = "";
+    private String productoID;
 
 
     @Override
@@ -59,18 +59,26 @@ public class EditarProductoActivity extends AppCompatActivity {
         precio = findViewById(R.id.precio_new);
         categoria = findViewById(R.id.categoria_new);
         foto = findViewById(R.id.foto_new);
-        productoID= getIntent().getStringExtra("pid");
+        productoID = getIntent().getStringExtra("pid");
         obtenerDatosProductoAEditar(productoID);
 
         dialog = new ProgressDialog(this);
 
         buttonEditar = findViewById(R.id.button4);
+        buttonEliminar= findViewById(R.id.button5);
 
 
         buttonEditar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editarProducto();
+                editarProducto(productoID);
+            }
+        });
+
+        buttonEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eliminarProducto(productoID); // Llama a la función eliminarProducto
             }
         });
 
@@ -78,12 +86,12 @@ public class EditarProductoActivity extends AppCompatActivity {
 
     }
 
-    private void obtenerDatosProductoAEditar(String productoId) {
+    private void obtenerDatosProductoAEditar(String productoID) {
 
 
 
-            DatabaseReference productoRef = mDatabase.child(productoId);
-            productoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference productoRef = mDatabase;
+            productoRef.child(productoID).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
@@ -109,10 +117,10 @@ public class EditarProductoActivity extends AppCompatActivity {
 
 
 
-    private void editarProducto() {
-        String uid = mUser.getUid();
+    private void editarProducto(String productoID) {
 
-        DatabaseReference usuarioRef = mDatabase.child(uid);
+
+        DatabaseReference productoRef = mDatabase.child(productoID);
 
         String Nombre = nombre.getText().toString().trim();
         String Precio = precio.getText().toString().trim();
@@ -135,16 +143,13 @@ public class EditarProductoActivity extends AppCompatActivity {
             dialog.setCanceledOnTouchOutside(true);
 
 
-            DatabaseReference nuevoProductoRef = mDatabase.push();
-            String pid = nuevoProductoRef.getKey();
-
             Map<String, Object> productoMap = new HashMap<>();
             productoMap.put("Nombre", Nombre);
             productoMap.put("Precio", UnTipoPrecio);
             productoMap.put("Categoria", Categoria);
             productoMap.put("Foto", Foto);
 
-            usuarioRef.updateChildren(productoMap)
+            productoRef.updateChildren(productoMap)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -173,6 +178,22 @@ public class EditarProductoActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void eliminarProducto(String productoID) {
+        DatabaseReference productoRef = mDatabase.child(productoID);
+        productoRef.removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(EditarProductoActivity.this, "Producto eliminado correctamente", Toast.LENGTH_SHORT).show();
+                            EnviarAlInicio();
+                        } else {
+                            Toast.makeText(EditarProductoActivity.this, "Error al eliminar el producto", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
 
