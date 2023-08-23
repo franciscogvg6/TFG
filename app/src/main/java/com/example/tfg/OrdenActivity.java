@@ -26,15 +26,11 @@ public class OrdenActivity extends AppCompatActivity {
 
     private RecyclerView recicler;
     private DatabaseReference OrdenRef;
-    private FirebaseAuth auth;
-    private static String currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rv_ordenes);
-        auth = FirebaseAuth.getInstance();
-        currentUserId = auth.getCurrentUser().getUid();
 
         OrdenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes");
         recicler = findViewById(R.id.recicler_ordenes);
@@ -55,7 +51,7 @@ public class OrdenActivity extends AppCompatActivity {
                     protected void onBindViewHolder(@NonNull OrdenesViewHolder holder, int position, @NonNull Ordenes model) {
                         holder.nombre.setText(model.getNombre());
                         holder.fecha.setText(model.getFecha() + " " + model.getHora());
-                        holder.showProductos(currentUserId);
+                        holder.showProductos(getRef(position).getKey()); // Pasa el ID de la orden actual
                     }
 
                     @NonNull
@@ -86,7 +82,7 @@ public class OrdenActivity extends AppCompatActivity {
 
         public void showProductos(String orderId) {
 
-            DatabaseReference ProductosRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(currentUserId).child("productos");
+            DatabaseReference ProductosRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(orderId).child("productos");
             FirebaseRecyclerOptions<ProductoOrden> options = new FirebaseRecyclerOptions.Builder<ProductoOrden>()
                     .setQuery(ProductosRef, ProductoOrden.class)
                     .build();
@@ -116,7 +112,7 @@ public class OrdenActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Aquí realizamos la acción para eliminar la orden de la base de datos
-                    DatabaseReference ordenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(currentUserId);
+                    DatabaseReference ordenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(orderId);
                     ordenRef.removeValue()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
@@ -147,8 +143,7 @@ public class OrdenActivity extends AppCompatActivity {
             textNombreProducto = itemView.findViewById(R.id.txtNombreProducto);
             textCantidadProducto = itemView.findViewById(R.id.txtCantidadProducto);
         }
-
-
     }
 }
+
 

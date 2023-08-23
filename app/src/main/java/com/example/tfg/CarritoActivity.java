@@ -188,17 +188,20 @@ public class CarritoActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm:ss");
         CurrentTime = dateFormat1.format(calendar.getTime());
 
-        final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(CurrentUserId);
+        final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child("Ordenes");
+
+        String nuevaOrdenId = OrdenesRef.push().getKey();
 
         HashMap<String, Object> map = new HashMap<>();
+        map.put("idOrden", nuevaOrdenId);
         map.put("fecha" , CurrentDate);
         map.put("hora" , CurrentTime);
         map.put("estado" , "No Enviado");
 
-        DatabaseReference productosRef = OrdenesRef.child("productos");
+        DatabaseReference productosRef = OrdenesRef.child(nuevaOrdenId).child("productos");
 
 
-        OrdenesRef.updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+        OrdenesRef.child(nuevaOrdenId).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {

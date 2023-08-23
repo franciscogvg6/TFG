@@ -43,7 +43,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
 
 
         // Cargar la imagen utilizando AsyncTask
-        new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
+       // new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
 
         holder.fotoImageView.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -65,6 +65,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
             }
         });
     }
+
     private static class CargarImagenTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;
         CargarImagenTask(ImageView imageView) {
@@ -84,7 +85,8 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
+                Bitmap resizedBitmap = resizeBitmap(bitmap, 10, 10);
+                imageView.setImageBitmap(resizedBitmap);
             } else {
                 // Manejar el error de carga de imagen
             }
@@ -97,7 +99,12 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
             InputStream input = connection.getInputStream();
             return BitmapFactory.decodeStream(input);
         }
+
+        private Bitmap resizeBitmap(Bitmap originalBitmap, int width, int height) {
+            return Bitmap.createScaledBitmap(originalBitmap, width, height, false);
+        }
     }
+
     @Override
     public int getItemCount() {
         return productosList.size();
