@@ -43,7 +43,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
 
 
         // Cargar la imagen utilizando AsyncTask
-       // new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
+       new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
 
         holder.fotoImageView.setOnClickListener(new View.OnClickListener(){
             @Override
