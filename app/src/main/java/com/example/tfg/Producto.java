@@ -2,7 +2,7 @@ package com.example.tfg;
 
 public class Producto {
     private String Nombre;
-    private double Precio;
+    private double Precio, Cantidad;
     private String Foto;
 
     private String Categoria;
@@ -11,7 +11,7 @@ public class Producto {
 
     public Producto(){}
 
-    public Producto(String Nombre, double Precio, String Foto, String Categoria, String pid, String fecha, String hora) {
+    public Producto(String Nombre, double Precio, String Foto, String Categoria, String pid, String fecha, String hora, double Cantidad) {
         this.Nombre = Nombre;
         this.Precio = Precio;
         this.Foto = Foto;
@@ -19,6 +19,7 @@ public class Producto {
         this.pid = pid;
         this.fecha = fecha;
         this.hora = hora;
+        this.Cantidad = Cantidad;
     }
 
     public String getNombre() {
@@ -75,6 +76,14 @@ public class Producto {
 
     public void setHora(String hora) {
         this.hora = hora;
+    }
+
+    public double getCantidad() {
+        return Cantidad;
+    }
+
+    public void setCantidad(double cantidad) {
+        Cantidad = cantidad;
     }
 }
 

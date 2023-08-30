@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CarritoActivity extends AppCompatActivity {
 
@@ -61,7 +62,7 @@ public class CarritoActivity extends AppCompatActivity {
         Siguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConfirmarOrden();
+                verificarYConfirmarOrden();
             }
         });
     }
@@ -101,13 +102,13 @@ public class CarritoActivity extends AppCompatActivity {
                         builder.setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
-                                if(1==0){
+                                if(i ==0){
                                     Intent intent = new Intent(CarritoActivity.this, ProductoDetallesActivity.class);
                                     intent.putExtra("pid", model.getPid());
                                     startActivity(intent);
                                 }
-                                if (1==1){
-                                    CartListRef.child("Usuario Compre")
+                                if (i ==1){
+                                    CartListRef.child("Usuario Compra")
                                             .child(CurrentUserId)
                                             .child("Productos")
                                             .child(model.getPid()).removeValue()
@@ -116,8 +117,7 @@ public class CarritoActivity extends AppCompatActivity {
                                                 public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
                                                         Toast.makeText(CarritoActivity.this, "Producto eliminado", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
-                                                        startActivity(intent);
+                                                        //adapter.notifyDataSetChanged();
                                                     }
                                                 }
                                             });
@@ -245,6 +245,59 @@ public class CarritoActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
+
+    private void verificarYConfirmarOrden() {
+        DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child("Carrito")
+                .child("Usuario Compra").child(CurrentUserId).child("Productos");
+
+        carritoRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                        Carrito productoCarrito = productSnapshot.getValue(Carrito.class);
+
+                        DatabaseReference productosRef = FirebaseDatabase.getInstance().getReference().child("Productos")
+                                .child(productoCarrito.getNombre());
+
+                        productosRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    int cantidadDisponible = Integer.parseInt(dataSnapshot.child("Cantidad").getValue().toString());
+                                    int cantidadPedida = Integer.parseInt(productoCarrito.getCantidad());
+
+                                    if (cantidadPedida <= cantidadDisponible) {
+                                        // La cantidad pedida es válida, confirma la orden y resta la cantidad
+                                        ConfirmarOrden();
+                                        int nuevaCantidad = cantidadDisponible - cantidadPedida;
+                                        dataSnapshot.getRef().child("Cantidad").setValue(nuevaCantidad);
+                                    } else {
+                                        // La cantidad pedida excede la cantidad disponible, muestra un mensaje de error
+                                        Toast.makeText(CarritoActivity.this, "La cantidad pedida excede la cantidad disponible", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // Manejar el error si es necesario
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Manejar el error si es necesario
+            }
+        });
+    }
+
+
 
 }
