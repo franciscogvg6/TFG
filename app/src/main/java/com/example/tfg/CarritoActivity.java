@@ -102,13 +102,13 @@ public class CarritoActivity extends AppCompatActivity {
                         builder.setItems(options, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
-                                if(1==0){
+                                if(i ==0){
                                     Intent intent = new Intent(CarritoActivity.this, ProductoDetallesActivity.class);
                                     intent.putExtra("pid", model.getPid());
                                     startActivity(intent);
                                 }
-                                if (1==1){
-                                    CartListRef.child("Usuario Compre")
+                                if (i ==1){
+                                    CartListRef.child("Usuario Compra")
                                             .child(CurrentUserId)
                                             .child("Productos")
                                             .child(model.getPid()).removeValue()
@@ -117,8 +117,7 @@ public class CarritoActivity extends AppCompatActivity {
                                                 public void onComplete(@androidx.annotation.NonNull Task<Void> task) {
                                                     if(task.isSuccessful()){
                                                         Toast.makeText(CarritoActivity.this, "Producto eliminado", Toast.LENGTH_SHORT).show();
-                                                        Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
-                                                        startActivity(intent);
+                                                        //adapter.notifyDataSetChanged();
                                                     }
                                                 }
                                             });
