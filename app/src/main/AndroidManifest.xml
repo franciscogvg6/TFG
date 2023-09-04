@@ -40,14 +40,9 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data
-                    android:host="kepido.page.link"
-                    android:scheme="https"
-                    android:pathPrefix="/63fF"/>
-                <data
-                    android:host="kepido.page.link"
-                    android:scheme="https"
-                    android:pathPrefix="/63fF"/>
+                <data android:scheme="https" android:host="example.com" />
+                <data android:scheme="https" android:host="example.com" />
+
             </intent-filter>
 
 

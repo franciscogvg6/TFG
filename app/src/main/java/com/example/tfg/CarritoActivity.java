@@ -40,7 +40,7 @@ public class CarritoActivity extends AppCompatActivity {
     private TextView TotalPrecio, mensaje;
     private double PrecioTotalD = 0.0;
 
-    private String CurrentUserId;
+    private String CurrentUserId, establecimiento;
     private FirebaseAuth auth;
 
     @Override
@@ -65,6 +65,8 @@ public class CarritoActivity extends AppCompatActivity {
                 verificarYConfirmarOrden();
             }
         });
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
     }
 
     @Override

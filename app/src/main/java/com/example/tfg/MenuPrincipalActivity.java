@@ -35,13 +35,15 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MenuPrincipalActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private String currentUserId;
 
-    private DatabaseReference userRef;
+    private DatabaseReference userRef, establecimientoRef;
+
 
     private String correo = "";
     private RecyclerView recyclerViewCategorias;
@@ -60,14 +62,46 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     Button btn_perfil;
 
+    String establecimiento;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        Uri data = intent.getData();
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+
+                        establecimiento = deepLink.getQueryParameter("establecimiento");
+                        String mesa = deepLink.getQueryParameter("mesa");
+
+                        System.out.println("Establecimiento: " + establecimiento);
+                        System.out.println("Mesa: " + mesa);
+
+                        Intent intent = new Intent(this, CarritoActivity.class);
+                        intent.putExtra("establecimiento", establecimiento);
+                        startActivity(intent);
+
+                        obtenerCategoriasDesdeFirebase();
+                        Categoria categoriaInicial = new Categoria("Cervezas");
+                        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+                        obtenerProductosDesdeFirebase(categoriaInicial);
+
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+
+                });
+
+
+
+
+
+        //establecimientoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -100,8 +134,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
-        // Obtener las categorías desde la base de datos
-        obtenerCategoriasDesdeFirebase();
+
+
 
 
         // Manejar el evento de clic en una categoría
@@ -113,9 +147,9 @@ public class MenuPrincipalActivity extends AppCompatActivity {
             }
         });
 
-        Categoria categoriaInicial = new Categoria("Cervezas");
+        /*Categoria categoriaInicial = new Categoria("Cervezas");
         textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-        obtenerProductosDesdeFirebase(categoriaInicial);
+        obtenerProductosDesdeFirebase(categoriaInicial);*/
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
@@ -192,7 +226,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     }
 
     private void obtenerCategoriasDesdeFirebase() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Categorias");
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Categorias");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -213,7 +247,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     }
 
     private void obtenerProductosDesdeFirebase(Categoria categoria) {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Productos")
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos")
                 .orderByChild("Categoria").equalTo(categoria.getNombre());
         query.addValueEventListener(new ValueEventListener() {
             @Override
