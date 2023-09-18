@@ -33,7 +33,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
     private ImageView productoImagen;
 
     TextView productoPrecio, productoNombre;
-    private String productoID = "", estado="Normal" , CurrentUserID, establecimiento;
+    private String productoID = "", estado="Normal" , CurrentUserID, establecimiento, mesa;
     private FirebaseAuth auth;
 
     @Override
@@ -44,6 +44,8 @@ public class ProductoDetallesActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
+
         productoID= getIntent().getStringExtra("pid");
 
         agregarCarrito=(Button) findViewById(R.id.boton_siguiente_detalles);
@@ -78,12 +80,6 @@ public class ProductoDetallesActivity extends AppCompatActivity {
 
     private void agregarALaLista(){
 
-        String CurrentTime, CurrentDate;
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat data = new SimpleDateFormat("MM-dd-yyyy");
-        CurrentDate=data.format(calendar.getTime());
-        SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
-        CurrentTime=time.format(calendar.getTime());
 
         final DatabaseReference CartListRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Carrito");
 
@@ -91,8 +87,6 @@ public class ProductoDetallesActivity extends AppCompatActivity {
         map.put("pid", productoID);
         map.put("nombre", productoNombre.getText().toString());
         map.put("precio", productoPrecio.getText().toString());
-        map.put("fecha", CurrentDate);
-        map.put("hora", CurrentTime);
         map.put("cantidad", numeroBoton.getText().toString());
 
         CartListRef.child("Usuario Compra").child(CurrentUserID).child("Productos").child(productoID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -105,8 +99,9 @@ public class ProductoDetallesActivity extends AppCompatActivity {
                             if (task.isSuccessful()){
                                 Toast.makeText(ProductoDetallesActivity.this, "Agregado...", Toast.LENGTH_SHORT).show();
 
-                                Intent intent = new Intent(ProductoDetallesActivity.this, CarritoActivity.class);
+                                Intent intent = new Intent(ProductoDetallesActivity.this, MenuPrincipalActivity.class);
                                 intent.putExtra("establecimiento", establecimiento);
+                                intent.putExtra("mesa", mesa);
                                 System.out.println("Redireccion: " + establecimiento);
                                 startActivity(intent);
                             }

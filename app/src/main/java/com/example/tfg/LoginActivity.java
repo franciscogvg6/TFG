@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class LoginActivity extends AppCompatActivity {
 
     private Button boton_usuario, boton_administrador;
-    private String establecimiento;
+    private String establecimiento, mesa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +31,10 @@ public class LoginActivity extends AppCompatActivity {
                     if (pendingDynamicLinkData != null) {
                         Uri deepLink = pendingDynamicLinkData.getLink();
                         establecimiento = deepLink.getQueryParameter("establecimiento");
+                        mesa = deepLink.getQueryParameter("mesa");
 
                         System.out.println("Establecimiento: " + establecimiento);
+                        System.out.println("mesa: " + mesa);
 
 
                     }
@@ -49,6 +51,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegistrarActivity.class);
                 intent.putExtra("establecimiento", establecimiento);
+                intent.putExtra("mesa", mesa);
                 startActivity(intent);
             }
         });

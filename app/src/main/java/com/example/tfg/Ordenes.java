@@ -4,18 +4,17 @@ import java.util.HashMap;
 
 public class Ordenes {
 
-    private String id, nombre, estado, fecha, hora;
+    private String id, nombre, estado, mesa;
     private HashMap<String, ProductoOrden> productos;
 
     public Ordenes(){}
 
-    public Ordenes(String nombre, String estado, String fecha, String hora, HashMap<String, ProductoOrden> productos) {
+    public Ordenes(String nombre, String estado, HashMap<String, ProductoOrden> productos, String mesa) {
         this.id = id;
         this.nombre = nombre;
         this.estado = estado;
-        this.fecha = fecha;
-        this.hora = hora;
         this.productos = productos;
+        this.mesa = mesa;
     }
 
     public String getId() {
@@ -42,21 +41,14 @@ public class Ordenes {
         this.estado = estado;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getMesa() {
+        return mesa;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setMesa(String mesa) {
+        this.mesa = mesa;
     }
 
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
-    }
 
     public HashMap<String, ProductoOrden> getProductos() {
         return productos;

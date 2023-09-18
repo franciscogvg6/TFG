@@ -26,7 +26,7 @@ public class OrdenActivity extends AppCompatActivity {
 
     private RecyclerView recicler;
     private DatabaseReference OrdenRef;
-    private static String establecimiento;
+    private static String establecimiento, mesa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,8 @@ public class OrdenActivity extends AppCompatActivity {
         setContentView(R.layout.rv_ordenes);
 
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
+
         OrdenRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes");
         recicler = findViewById(R.id.recicler_ordenes);
         recicler.setLayoutManager(new LinearLayoutManager(this));
@@ -52,7 +54,7 @@ public class OrdenActivity extends AppCompatActivity {
                     @Override
                     protected void onBindViewHolder(@NonNull OrdenesViewHolder holder, int position, @NonNull Ordenes model) {
                         holder.nombre.setText(model.getNombre());
-                        holder.fecha.setText(model.getFecha() + " " + model.getHora());
+                        holder.numeroMesa.setText("Mesa: " + model.getMesa());
                         holder.showProductos(getRef(position).getKey()); // Pasa el ID de la orden actual
                     }
 
@@ -69,7 +71,7 @@ public class OrdenActivity extends AppCompatActivity {
     }
 
     public static class OrdenesViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre, fecha;
+        TextView nombre, numeroMesa;
         RecyclerView reciclerProductos;
 
         Button btnConfirmar;
@@ -77,7 +79,7 @@ public class OrdenActivity extends AppCompatActivity {
         public OrdenesViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre = itemView.findViewById(R.id.ordenuser);
-            fecha = itemView.findViewById(R.id.ordenfecha);
+            numeroMesa = itemView.findViewById(R.id.numeroMesaTextView);
             reciclerProductos = itemView.findViewById(R.id.recycler_productos_orden);
             btnConfirmar = itemView.findViewById(R.id.confirmar);
         }
@@ -95,6 +97,7 @@ public class OrdenActivity extends AppCompatActivity {
                         protected void onBindViewHolder(@NonNull ProductoOrdenViewHolder holder, int position, @NonNull ProductoOrden model) {
                             holder.textNombreProducto.setText(model.getNombre());
                             holder.textCantidadProducto.setText("Cantidad: " + model.getCantidad());
+
 
                         }
 
@@ -125,6 +128,7 @@ public class OrdenActivity extends AppCompatActivity {
                                         Intent intent = new Intent(itemView.getContext(), AdminActivity.class);
                                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                         intent.putExtra("establecimiento", establecimiento);
+                                        intent.putExtra("mesa", mesa);
                                         itemView.getContext().startActivity(intent);
                                     }else {
                                         Intent intent = new Intent(itemView.getContext(), OrdenActivity.class);

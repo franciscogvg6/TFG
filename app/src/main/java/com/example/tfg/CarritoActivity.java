@@ -40,7 +40,7 @@ public class CarritoActivity extends AppCompatActivity {
     private TextView TotalPrecio, mensaje;
     private double PrecioTotalD = 0.0;
 
-    private String CurrentUserId, establecimiento;
+    private String CurrentUserId, establecimiento, mesa;
     private FirebaseAuth auth;
 
     @Override
@@ -67,7 +67,9 @@ public class CarritoActivity extends AppCompatActivity {
         });
 
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
         System.out.println("Establecimientoo: " + establecimiento);
+        System.out.println("Mesa carrito: " + mesa);
     }
 
 
@@ -75,6 +77,7 @@ public class CarritoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         System.out.println("Establecimientoo2: " + establecimiento);
+        System.out.println("Mesa carrito2: " + mesa);
 
         VerificarEstadoOrden();
 
@@ -186,13 +189,7 @@ public class CarritoActivity extends AppCompatActivity {
     }
 
     private void ConfirmarOrden() {
-        final String CurrentTime, CurrentDate;
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
-        CurrentDate = dateFormat.format(calendar.getTime());
 
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm:ss");
-        CurrentTime = dateFormat1.format(calendar.getTime());
 
         final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes");
 
@@ -200,9 +197,8 @@ public class CarritoActivity extends AppCompatActivity {
 
         HashMap<String, Object> map = new HashMap<>();
         map.put("idOrden", nuevaOrdenId);
-        map.put("fecha" , CurrentDate);
-        map.put("hora" , CurrentTime);
         map.put("estado" , "No Enviado");
+        map.put("mesa", mesa);
 
         DatabaseReference productosRef = OrdenesRef.child(nuevaOrdenId).child("productos");
 
@@ -237,6 +233,8 @@ public class CarritoActivity extends AppCompatActivity {
                                 Toast.makeText(CarritoActivity.this, "¡Orden realizada!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
                                 intent.putExtra("establecimiento", establecimiento);
+                                intent.putExtra("mesa", mesa);
+                                System.out.println("mesa orden: " + mesa);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();

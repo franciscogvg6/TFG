@@ -26,7 +26,7 @@ public class RegistrarActivity extends AppCompatActivity {
 
     EditText email, password;
 
-    String correo, establecimiento;
+    String correo, establecimiento, mesa;
     Button btn_registrar, btn_login;
 
     FirebaseAuth firebaseAuth;
@@ -44,6 +44,7 @@ public class RegistrarActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
 
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
 
         if(user !=null){
             irAHome();
@@ -121,6 +122,7 @@ public class RegistrarActivity extends AppCompatActivity {
         i.putExtra("correo", correo);
         i.putExtra("rol", "usuario");
         i.putExtra("establecimiento", establecimiento);
+        i.putExtra("mesa", mesa);
         startActivity(i);
         finish();
     }

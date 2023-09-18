@@ -7,18 +7,17 @@ public class Producto {
 
     private String Categoria;
 
-    private String pid, fecha, hora;
+    private String pid;
 
     public Producto(){}
 
-    public Producto(String Nombre, double Precio, String Foto, String Categoria, String pid, String fecha, String hora, double Cantidad) {
+    public Producto(String Nombre, double Precio, String Foto, String Categoria, String pid, double Cantidad) {
         this.Nombre = Nombre;
         this.Precio = Precio;
         this.Foto = Foto;
         this.Categoria = Categoria;
         this.pid = pid;
-        this.fecha = fecha;
-        this.hora = hora;
+
         this.Cantidad = Cantidad;
     }
 
@@ -60,22 +59,6 @@ public class Producto {
 
     public void setPid(String pid) {
         this.pid = pid;
-    }
-
-    public String getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getHora() {
-        return hora;
-    }
-
-    public void setHora(String hora) {
-        this.hora = hora;
     }
 
     public double getCantidad() {
