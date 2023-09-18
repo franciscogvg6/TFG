@@ -32,6 +32,7 @@ public class EditarProductoActivity extends AppCompatActivity {
     private EditText precio;
     private EditText categoria;
     private EditText foto;
+    private EditText cantidad;
 
 
     private ProgressDialog dialog;
@@ -42,7 +43,7 @@ public class EditarProductoActivity extends AppCompatActivity {
 
     private Button buttonEditar, buttonEliminar;
 
-    private String productoID;
+    private String productoID, establecimiento;
 
 
     @Override
@@ -53,13 +54,16 @@ public class EditarProductoActivity extends AppCompatActivity {
         // Inicializar Firebase Auth y Database
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Productos");
+        establecimiento = getIntent().getStringExtra("establecimiento");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos");
 
         nombre= findViewById(R.id.nombre_new);
         precio = findViewById(R.id.precio_new);
         categoria = findViewById(R.id.categoria_new);
         foto = findViewById(R.id.foto_new);
+        cantidad = findViewById(R.id.cantidad_new);
         productoID = getIntent().getStringExtra("pid");
+
         obtenerDatosProductoAEditar(productoID);
 
         dialog = new ProgressDialog(this);
@@ -97,7 +101,9 @@ public class EditarProductoActivity extends AppCompatActivity {
                     if (snapshot.exists()) {
                         String Nombre = snapshot.child("Nombre").getValue(String.class);
                         double PrecioDou = snapshot.child("Precio").getValue(Double.class);
+                        double CantidadDou = snapshot.child("Cantidad").getValue(Double.class);
                         String Precio = String.valueOf(PrecioDou);
+                        String Cantidad = String.valueOf(CantidadDou);
                         String Categoria = snapshot.child("Categoria").getValue(String.class);
                         String Foto = snapshot.child("Foto").getValue(String.class);
 
@@ -105,6 +111,7 @@ public class EditarProductoActivity extends AppCompatActivity {
                         precio.setText(Precio);
                         categoria.setText(Categoria);
                         foto.setText(Foto);
+                        cantidad.setText(Cantidad);
                     }
                 }
 
@@ -125,6 +132,8 @@ public class EditarProductoActivity extends AppCompatActivity {
         String Nombre = nombre.getText().toString().trim();
         String Precio = precio.getText().toString().trim();
         double UnTipoPrecio = (Double.valueOf(Precio));
+        String Cantidad = cantidad.getText().toString().trim();
+        double UnTipoCantidad = (Double.valueOf(Cantidad));
         String Categoria = categoria.getText().toString().trim();
         String Foto = foto.getText().toString().trim();
 
@@ -136,7 +145,9 @@ public class EditarProductoActivity extends AppCompatActivity {
             Toast.makeText(this, "Ingrese la categoria", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(Foto)) {
             Toast.makeText(this, "Ingrese la foto", Toast.LENGTH_SHORT).show();
-        }  else {
+        }  else if (TextUtils.isEmpty(Cantidad)) {
+            Toast.makeText(this, "Ingrese la cantidad", Toast.LENGTH_SHORT).show();
+        }else {
             dialog.setTitle("Guardando");
             dialog.setMessage("Por favor espere...");
             dialog.show();
@@ -148,6 +159,7 @@ public class EditarProductoActivity extends AppCompatActivity {
             productoMap.put("Precio", UnTipoPrecio);
             productoMap.put("Categoria", Categoria);
             productoMap.put("Foto", Foto);
+            productoMap.put("Cantidad", UnTipoCantidad);
 
             productoRef.updateChildren(productoMap)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -175,6 +187,7 @@ public class EditarProductoActivity extends AppCompatActivity {
 
     private void EnviarAlInicio() {
         Intent intent = new Intent(EditarProductoActivity.this, AdminActivity.class);
+        intent.putExtra("establecimiento", establecimiento);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

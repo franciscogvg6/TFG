@@ -32,8 +32,10 @@ public class NuevoProductoActivity extends AppCompatActivity {
     private EditText precio;
     private EditText categoria;
     private EditText foto;
+    private EditText cantidad;
 
     private Button buttonAnadir;
+    private String establecimiento;
 
     private ProgressDialog dialog;
 
@@ -50,12 +52,14 @@ public class NuevoProductoActivity extends AppCompatActivity {
         // Inicializar Firebase Auth y Database
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-        mDatabase = FirebaseDatabase.getInstance().getReference("Productos");
+        establecimiento = getIntent().getStringExtra("establecimiento");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos");
 
         nombre= findViewById(R.id.nombre_new);
         precio = findViewById(R.id.precio_new);
         categoria = findViewById(R.id.categoria_new);
         foto = findViewById(R.id.foto_new);
+        cantidad = findViewById(R.id.cantidad_new);
 
         dialog = new ProgressDialog(this);
 
@@ -81,6 +85,8 @@ public class NuevoProductoActivity extends AppCompatActivity {
         String Nombre = nombre.getText().toString().trim();
         String Precio = precio.getText().toString().trim();
         double UnTipoPrecio = (Double.valueOf(Precio));
+        String Cantidad = cantidad.getText().toString().trim();
+        double UnTipoCantidad = (Double.valueOf(Cantidad));
         String Categoria = categoria.getText().toString().trim();
         String Foto = foto.getText().toString().trim();
 
@@ -92,7 +98,9 @@ public class NuevoProductoActivity extends AppCompatActivity {
             Toast.makeText(this, "Ingrese la categoria", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(Foto)) {
             Toast.makeText(this, "Ingrese la foto", Toast.LENGTH_SHORT).show();
-         }  else {
+         } else if (TextUtils.isEmpty(Cantidad)) {
+            Toast.makeText(this, "Ingrese la cantidad", Toast.LENGTH_SHORT).show();
+        } else {
             dialog.setTitle("Guardando");
             dialog.setMessage("Por favor espere...");
             dialog.show();
@@ -107,6 +115,7 @@ public class NuevoProductoActivity extends AppCompatActivity {
             productoMap.put("Precio", UnTipoPrecio);
             productoMap.put("Categoria", Categoria);
             productoMap.put("Foto", Foto);
+            productoMap.put("Cantidad", UnTipoCantidad);
             productoMap.put("pid", pid);
 
             nuevoProductoRef.setValue(productoMap).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -132,6 +141,7 @@ public class NuevoProductoActivity extends AppCompatActivity {
     private void EnviarAlInicio() {
         Intent intent = new Intent(NuevoProductoActivity.this, AdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("establecimiento", establecimiento);
         startActivity(intent);
         finish();
     }

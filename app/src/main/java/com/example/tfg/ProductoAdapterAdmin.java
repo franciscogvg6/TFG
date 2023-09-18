@@ -23,9 +23,12 @@ import java.util.ArrayList;
 public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAdmin.ProductoViewHolder> {
     private ArrayList<Producto> productosList;
     private int layout;
-    public ProductoAdapterAdmin(ArrayList<Producto> productosList, int layout) {
+    private String establecimiento;
+
+    public ProductoAdapterAdmin(ArrayList<Producto> productosList, int layout, String establecimiento) {
         this.productosList = productosList;
         this.layout = layout;
+        this.establecimiento = establecimiento;
     }
     @NonNull
     @Override
@@ -50,6 +53,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), ProductoDetallesActivity.class);
                 intent.putExtra("pid", producto.getPid());
+                intent.putExtra("establecimiento", establecimiento);
                 v.getContext().startActivity(intent);
             }
         });
@@ -58,9 +62,9 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
             @Override
             public void onClick(View v) {
 
-
                 Intent intent = new Intent(v.getContext(), EditarProductoActivity.class);
                 intent.putExtra("pid", producto.getPid());
+                intent.putExtra("establecimiento", establecimiento);
                 v.getContext().startActivity(intent);
             }
         });

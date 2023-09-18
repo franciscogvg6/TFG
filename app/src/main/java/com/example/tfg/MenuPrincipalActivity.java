@@ -44,6 +44,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private DatabaseReference userRef, establecimientoRef;
 
+    private boolean handleDynamicLink = true;
+
 
     private String correo = "";
     private RecyclerView recyclerViewCategorias;
@@ -69,7 +71,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
-
+/*
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(getIntent())
                 .addOnSuccessListener(this, pendingDynamicLinkData -> {
@@ -82,20 +84,32 @@ public class MenuPrincipalActivity extends AppCompatActivity {
                         System.out.println("Establecimiento: " + establecimiento);
                         System.out.println("Mesa: " + mesa);
 
-                        Intent intent = new Intent(this, CarritoActivity.class);
-                        intent.putExtra("establecimiento", establecimiento);
-                        startActivity(intent);
+
 
                         obtenerCategoriasDesdeFirebase();
                         Categoria categoriaInicial = new Categoria("Cervezas");
                         textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
                         obtenerProductosDesdeFirebase(categoriaInicial);
 
+
+
+
+                        //Intent intent3 = new Intent(this, CarritoActivity.class);
+                        //intent3.putExtra("establecimiento", establecimiento);
+                        //startActivity(intent3);
+
+                        productosList = new ArrayList<>();
+                        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
+                        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
+                        recyclerViewProductos.setAdapter(productoAdapter);
                     }
                 })
                 .addOnFailureListener(this, e -> {
 
                 });
+
+*/
+        establecimiento = getIntent().getStringExtra("establecimiento");
 
 
 
@@ -115,11 +129,15 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         // Inicializar las vistas
         recyclerViewCategorias = findViewById(R.id.rv);
         recyclerViewProductos = findViewById(R.id.rv_productos);
+
         textViewCategoriaSeleccionada = findViewById(R.id.textViewCategoriaSeleccionada);
+        Categoria categoriaInicial = new Categoria("Cervezas");
+        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+
 
         // Inicializar las listas de categorías y productos
         categoriasList = new ArrayList<>();
-        productosList = new ArrayList<>();
+
 
         // Simular datos de prueba
         //cargarDatosDePrueba();
@@ -130,13 +148,17 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render);
+        productosList = new ArrayList<>();
+        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
 
 
 
+
+        obtenerCategoriasDesdeFirebase();
+        obtenerProductosDesdeFirebase(categoriaInicial);
 
         // Manejar el evento de clic en una categoría
         categoriaAdapter.setOnItemClickListener(new CategoriaAdapter.OnItemClickListener() {
@@ -284,11 +306,13 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
     private void irACarrito() {
         Intent i = new Intent(this, CarritoActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 

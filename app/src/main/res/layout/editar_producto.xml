@@ -20,25 +20,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/foto_new" />
+        app:layout_constraintTop_toBottomOf="@+id/cantidad_new" />
+
 
     <Button
         android:id="@+id/button5"
         android:layout_width="300dp"
         android:layout_height="56dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="59dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/button_rounded"
         android:backgroundTint="#CA1616"
         android:text="Eliminar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
-
-
-
 
     <EditText
         android:id="@+id/foto_new"
@@ -60,6 +58,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/categoria_new" />
 
+    <EditText
+        android:id="@+id/cantidad_new"
+        android:layout_width="300dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/button_rounded"
+        android:backgroundTint="#D9D9D9"
+        android:ems="10"
+        android:hint="Cantidad"
+        android:inputType="textPersonName"
+        android:textColor="#000000"
+        android:textColorHint="#2B54BD"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foto_new" />
+
     <TextView
         android:id="@+id/textView10"
         android:layout_width="wrap_content"
@@ -67,7 +85,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="62dp"
         android:layout_marginEnd="32dp"
-        android:text="AÑADIR PRODUCTO"
+        android:text="EDITAR PRODUCTO"
         android:textColor="#2B54BD"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.example.tfg.CategoriaAdapter;
 import com.example.tfg.CategoriaAdapter.OnItemClickListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
 import java.util.ArrayList;
 
@@ -35,7 +37,7 @@ public class AdminActivity extends AppCompatActivity {
     private String correo;
 
     private FirebaseAuth auth;
-    private String currentUserId;
+    private String currentUserId, establecimiento;
 
     private DatabaseReference userRef;
 
@@ -61,6 +63,39 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
+        /*FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+
+                        establecimiento = deepLink.getQueryParameter("establecimiento");
+                        String mesa = deepLink.getQueryParameter("mesa");
+
+                        System.out.println("Establecimiento: " + establecimiento);
+                        System.out.println("Mesa: " + mesa);
+
+
+
+                        obtenerCategoriasDesdeFirebase();
+                        Categoria categoriaInicial = new Categoria("Cervezas");
+                        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+                        obtenerProductosDesdeFirebase(categoriaInicial);
+
+
+                        recyclerViewProductos = findViewById(R.id.rv_productos);
+                        productosList = new ArrayList<>();
+                        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render, establecimiento);
+                        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
+                        recyclerViewProductos.setAdapter(productoAdapter);
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+
+                });*/
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
+
         // Inicializar las vistas
         recyclerViewCategorias = findViewById(R.id.rv);
         recyclerViewProductos = findViewById(R.id.rv_productos);
@@ -69,6 +104,7 @@ public class AdminActivity extends AppCompatActivity {
         // Inicializar las listas de categorías y productos
         categoriasList = new ArrayList<>();
         productosList = new ArrayList<>();
+
 
         // Simular datos de prueba
         //cargarDatosDePrueba();
@@ -79,12 +115,18 @@ public class AdminActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render);
+        recyclerViewProductos = findViewById(R.id.rv_productos);
+        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render, establecimiento);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
-        // Obtener las categorías desde la base de datos
+        Categoria categoriaInicial = new Categoria("Cervezas");
+        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+
         obtenerCategoriasDesdeFirebase();
+        obtenerProductosDesdeFirebase(categoriaInicial);
+
+
 
 
         // Manejar el evento de clic en una categoría
@@ -96,9 +138,6 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
-        Categoria categoriaInicial = new Categoria("Cervezas");
-        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-        obtenerProductosDesdeFirebase(categoriaInicial);
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
@@ -146,7 +185,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void obtenerCategoriasDesdeFirebase() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Categorias");
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Categorias");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -167,7 +206,7 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     private void obtenerProductosDesdeFirebase(Categoria categoria) {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Productos")
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos")
                 .orderByChild("Categoria").equalTo(categoria.getNombre());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -200,21 +239,25 @@ public class AdminActivity extends AppCompatActivity {
     private void irALogin(){
         Intent i = new Intent(this, RegistrarAdminActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |Intent.FLAG_ACTIVITY_CLEAR_TASK |Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilAdminActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
     private void irAOrdenes() {
         Intent i = new Intent(this, OrdenActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
     private void irAAnadir() {
         Intent i = new Intent(this, NuevoProductoActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
@@ -250,6 +293,7 @@ public class AdminActivity extends AppCompatActivity {
 
         Intent intent = new Intent(AdminActivity.this, RegistrarAdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("establecimiento", establecimiento);
         startActivity(intent);
         finish();
     }
@@ -258,6 +302,7 @@ public class AdminActivity extends AppCompatActivity {
         Intent intent = new Intent(AdminActivity.this, PerfilAdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("correo", correo);
+        intent.putExtra("establecimiento", establecimiento);
         startActivity(intent);
         finish();
 
