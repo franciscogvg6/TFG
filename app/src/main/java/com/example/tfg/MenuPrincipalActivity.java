@@ -35,13 +35,17 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MenuPrincipalActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private String currentUserId;
 
-    private DatabaseReference userRef;
+    private DatabaseReference userRef, establecimientoRef;
+
+    private boolean handleDynamicLink = true;
+
 
     private String correo = "";
     private RecyclerView recyclerViewCategorias;
@@ -60,14 +64,58 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     Button btn_perfil;
 
+    String establecimiento;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        Uri data = intent.getData();
+/*
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, pendingDynamicLinkData -> {
+                    if (pendingDynamicLinkData != null) {
+                        Uri deepLink = pendingDynamicLinkData.getLink();
+
+                        establecimiento = deepLink.getQueryParameter("establecimiento");
+                        String mesa = deepLink.getQueryParameter("mesa");
+
+                        System.out.println("Establecimiento: " + establecimiento);
+                        System.out.println("Mesa: " + mesa);
+
+
+
+                        obtenerCategoriasDesdeFirebase();
+                        Categoria categoriaInicial = new Categoria("Cervezas");
+                        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+                        obtenerProductosDesdeFirebase(categoriaInicial);
+
+
+
+
+                        //Intent intent3 = new Intent(this, CarritoActivity.class);
+                        //intent3.putExtra("establecimiento", establecimiento);
+                        //startActivity(intent3);
+
+                        productosList = new ArrayList<>();
+                        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
+                        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
+                        recyclerViewProductos.setAdapter(productoAdapter);
+                    }
+                })
+                .addOnFailureListener(this, e -> {
+
+                });
+
+*/
+        establecimiento = getIntent().getStringExtra("establecimiento");
+
+
+
+
+
+        //establecimientoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -81,11 +129,15 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         // Inicializar las vistas
         recyclerViewCategorias = findViewById(R.id.rv);
         recyclerViewProductos = findViewById(R.id.rv_productos);
+
         textViewCategoriaSeleccionada = findViewById(R.id.textViewCategoriaSeleccionada);
+        Categoria categoriaInicial = new Categoria("Cervezas");
+        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
+
 
         // Inicializar las listas de categorías y productos
         categoriasList = new ArrayList<>();
-        productosList = new ArrayList<>();
+
 
         // Simular datos de prueba
         //cargarDatosDePrueba();
@@ -96,13 +148,17 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         recyclerViewCategorias.setAdapter(categoriaAdapter);
 
         // Configurar el RecyclerView de productos
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render);
+        productosList = new ArrayList<>();
+        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
-        // Obtener las categorías desde la base de datos
-        obtenerCategoriasDesdeFirebase();
 
+
+
+
+        obtenerCategoriasDesdeFirebase();
+        obtenerProductosDesdeFirebase(categoriaInicial);
 
         // Manejar el evento de clic en una categoría
         categoriaAdapter.setOnItemClickListener(new CategoriaAdapter.OnItemClickListener() {
@@ -113,9 +169,9 @@ public class MenuPrincipalActivity extends AppCompatActivity {
             }
         });
 
-        Categoria categoriaInicial = new Categoria("Cervezas");
+        /*Categoria categoriaInicial = new Categoria("Cervezas");
         textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-        obtenerProductosDesdeFirebase(categoriaInicial);
+        obtenerProductosDesdeFirebase(categoriaInicial);*/
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);
@@ -192,7 +248,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     }
 
     private void obtenerCategoriasDesdeFirebase() {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Categorias");
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Categorias");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -213,7 +269,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     }
 
     private void obtenerProductosDesdeFirebase(Categoria categoria) {
-        Query query = FirebaseDatabase.getInstance().getReference().child("Productos")
+        Query query = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos")
                 .orderByChild("Categoria").equalTo(categoria.getNombre());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -250,11 +306,13 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 
     private void irACarrito() {
         Intent i = new Intent(this, CarritoActivity.class);
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
     }
 

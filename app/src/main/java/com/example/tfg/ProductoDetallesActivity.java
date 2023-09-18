@@ -33,7 +33,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
     private ImageView productoImagen;
 
     TextView productoPrecio, productoNombre;
-    private String productoID = "", estado="Normal" , CurrentUserID;
+    private String productoID = "", estado="Normal" , CurrentUserID, establecimiento;
     private FirebaseAuth auth;
 
     @Override
@@ -41,7 +41,11 @@ public class ProductoDetallesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_producto_detalles);
 
+        Intent intent = getIntent();
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
         productoID= getIntent().getStringExtra("pid");
+
         agregarCarrito=(Button) findViewById(R.id.boton_siguiente_detalles);
         numeroBoton=(EditText) findViewById(R.id.numero_boton);
         productoImagen=(ImageView) findViewById(R.id.producto_imagen_detalles);
@@ -61,6 +65,8 @@ public class ProductoDetallesActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
     @Override
@@ -79,7 +85,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
         SimpleDateFormat time = new SimpleDateFormat("HH:mm:ss");
         CurrentTime=time.format(calendar.getTime());
 
-        final DatabaseReference CartListRef = FirebaseDatabase.getInstance().getReference().child("Carrito");
+        final DatabaseReference CartListRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Carrito");
 
         final HashMap<String, Object> map = new HashMap<>();
         map.put("pid", productoID);
@@ -99,7 +105,9 @@ public class ProductoDetallesActivity extends AppCompatActivity {
                             if (task.isSuccessful()){
                                 Toast.makeText(ProductoDetallesActivity.this, "Agregado...", Toast.LENGTH_SHORT).show();
 
-                                Intent intent = new Intent(ProductoDetallesActivity.this, MenuPrincipalActivity.class);
+                                Intent intent = new Intent(ProductoDetallesActivity.this, CarritoActivity.class);
+                                intent.putExtra("establecimiento", establecimiento);
+                                System.out.println("Redireccion: " + establecimiento);
                                 startActivity(intent);
                             }
                         }
@@ -111,7 +119,8 @@ public class ProductoDetallesActivity extends AppCompatActivity {
     }
 
     private void ObtenerDatosProductos(String productoID){
-        DatabaseReference ProductoRef = FirebaseDatabase.getInstance().getReference().child("Productos");
+        System.out.println("Establecimientpsiaf: " + establecimiento);
+        DatabaseReference ProductoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos");
         ProductoRef.child(productoID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -138,7 +147,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
 
     private void VerificarEstadoOrden(){
         DatabaseReference OrdenRef;
-        OrdenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(CurrentUserID);
+        OrdenRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes").child(CurrentUserID);
         OrdenRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

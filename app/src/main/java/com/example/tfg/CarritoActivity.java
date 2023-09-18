@@ -40,7 +40,7 @@ public class CarritoActivity extends AppCompatActivity {
     private TextView TotalPrecio, mensaje;
     private double PrecioTotalD = 0.0;
 
-    private String CurrentUserId;
+    private String CurrentUserId, establecimiento;
     private FirebaseAuth auth;
 
     @Override
@@ -65,16 +65,21 @@ public class CarritoActivity extends AppCompatActivity {
                 verificarYConfirmarOrden();
             }
         });
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
+        System.out.println("Establecimientoo: " + establecimiento);
     }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+        System.out.println("Establecimientoo2: " + establecimiento);
 
         VerificarEstadoOrden();
 
 
-        final DatabaseReference CartListRef = FirebaseDatabase.getInstance().getReference().child("Carrito");
+        final DatabaseReference CartListRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Carrito");
 
         FirebaseRecyclerOptions<Carrito> options = new FirebaseRecyclerOptions.Builder<Carrito>()
                 .setQuery(CartListRef.child("Usuario Compra").child(CurrentUserId).child("Productos"), Carrito.class).build();
@@ -104,6 +109,7 @@ public class CarritoActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int i) {
                                 if(i ==0){
                                     Intent intent = new Intent(CarritoActivity.this, ProductoDetallesActivity.class);
+                                    intent.putExtra("establecimiento", establecimiento);
                                     intent.putExtra("pid", model.getPid());
                                     startActivity(intent);
                                 }
@@ -146,7 +152,7 @@ public class CarritoActivity extends AppCompatActivity {
 
     private void VerificarEstadoOrden() {
         DatabaseReference ordenRef;
-        ordenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(CurrentUserId);
+        ordenRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes").child(CurrentUserId);
 
         ordenRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -188,7 +194,7 @@ public class CarritoActivity extends AppCompatActivity {
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH:mm:ss");
         CurrentTime = dateFormat1.format(calendar.getTime());
 
-        final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child("Ordenes");
+        final DatabaseReference OrdenesRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes");
 
         String nuevaOrdenId = OrdenesRef.push().getKey();
 
@@ -205,7 +211,7 @@ public class CarritoActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child("Carrito")
+                    DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Carrito")
                             .child("Usuario Compra").child(CurrentUserId);
                     carritoRef.child("Productos").addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -230,6 +236,7 @@ public class CarritoActivity extends AppCompatActivity {
                                 // Aquí puedes mostrar un mensaje de éxito o realizar otras acciones después de completar la orden
                                 Toast.makeText(CarritoActivity.this, "¡Orden realizada!", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(CarritoActivity.this, MenuPrincipalActivity.class);
+                                intent.putExtra("establecimiento", establecimiento);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                                 finish();
@@ -250,7 +257,7 @@ public class CarritoActivity extends AppCompatActivity {
     }
 
     private void verificarYConfirmarOrden() {
-        DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child("Carrito")
+        DatabaseReference carritoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Carrito")
                 .child("Usuario Compra").child(CurrentUserId).child("Productos");
 
         carritoRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -260,7 +267,7 @@ public class CarritoActivity extends AppCompatActivity {
                     for (DataSnapshot productSnapshot : snapshot.getChildren()) {
                         Carrito productoCarrito = productSnapshot.getValue(Carrito.class);
 
-                        DatabaseReference productosRef = FirebaseDatabase.getInstance().getReference().child("Productos")
+                        DatabaseReference productosRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Productos")
                                 .child(productoCarrito.getNombre());
 
                         productosRef.addListenerForSingleValueEvent(new ValueEventListener() {

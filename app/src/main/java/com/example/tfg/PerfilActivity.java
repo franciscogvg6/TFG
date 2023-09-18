@@ -34,7 +34,7 @@ public class PerfilActivity extends AppCompatActivity {
     private EditText editTextLocalidad;
     private EditText editTextFechaNacimiento;
 
-    private String correo = "";
+    private String correo = "", establecimiento;
     private Button buttonEditar;
 
     private Button buttonEliminar;
@@ -55,6 +55,8 @@ public class PerfilActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference("Usuarios");
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
 
         editTextEmail = findViewById(R.id.editTextTextPersonName8);
         editTextNombre = findViewById(R.id.editTextTextPersonName9);
@@ -213,6 +215,7 @@ public class PerfilActivity extends AppCompatActivity {
     private void EnviarAlInicio() {
         Intent intent = new Intent(PerfilActivity.this, MenuPrincipalActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("establecimiento", establecimiento);
         startActivity(intent);
         finish();
     }

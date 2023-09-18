@@ -34,7 +34,7 @@ public class PerfilAdminActivity extends AppCompatActivity {
     private EditText editTextLocalidad;
     private EditText editTextFechaNacimiento;
 
-    private String correo = "";
+    private String correo = "", establecimiento;
     private Button buttonEditar;
 
     private Button buttonEliminar;
@@ -65,6 +65,8 @@ public class PerfilAdminActivity extends AppCompatActivity {
 
         buttonEditar = findViewById(R.id.button4);
         buttonEliminar = findViewById(R.id.button5);
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
 
 
         Bundle bundle = getIntent().getExtras();
@@ -207,6 +209,7 @@ public class PerfilAdminActivity extends AppCompatActivity {
     private void EnviarAlInicio() {
         Intent intent = new Intent(PerfilAdminActivity.this, AdminActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("establecimiento", establecimiento);
         startActivity(intent);
         finish();
     }

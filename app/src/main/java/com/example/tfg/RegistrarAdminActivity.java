@@ -26,7 +26,7 @@ public class RegistrarAdminActivity extends AppCompatActivity {
 
     EditText email, password;
 
-    String correo;
+    String correo, establecimiento;
     Button btn_registrar, btn_login;
 
     FirebaseAuth firebaseAuth;
@@ -42,6 +42,8 @@ public class RegistrarAdminActivity extends AppCompatActivity {
         FirebaseAuth mAuth= FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
+
+        establecimiento = getIntent().getStringExtra("establecimiento");
 
         if(user !=null){
             irAHome();
@@ -118,6 +120,7 @@ public class RegistrarAdminActivity extends AppCompatActivity {
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("correo", correo);
         i.putExtra("rol", "admin");
+        i.putExtra("establecimiento", establecimiento);
         startActivity(i);
         finish();
     }

@@ -26,13 +26,15 @@ public class OrdenActivity extends AppCompatActivity {
 
     private RecyclerView recicler;
     private DatabaseReference OrdenRef;
+    private static String establecimiento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rv_ordenes);
 
-        OrdenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes");
+        establecimiento = getIntent().getStringExtra("establecimiento");
+        OrdenRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes");
         recicler = findViewById(R.id.recicler_ordenes);
         recicler.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -82,7 +84,7 @@ public class OrdenActivity extends AppCompatActivity {
 
         public void showProductos(String orderId) {
 
-            DatabaseReference ProductosRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(orderId).child("productos");
+            DatabaseReference ProductosRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes").child(orderId).child("productos");
             FirebaseRecyclerOptions<ProductoOrden> options = new FirebaseRecyclerOptions.Builder<ProductoOrden>()
                     .setQuery(ProductosRef, ProductoOrden.class)
                     .build();
@@ -112,15 +114,26 @@ public class OrdenActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // Aquí realizamos la acción para eliminar la orden de la base de datos
-                    DatabaseReference ordenRef = FirebaseDatabase.getInstance().getReference().child("Ordenes").child(orderId);
+                    DatabaseReference ordenRef = FirebaseDatabase.getInstance().getReference().child(establecimiento).child("Ordenes").child(orderId);
                     ordenRef.removeValue()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(itemView.getContext(), "Orden enviada correctamente", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(itemView.getContext(), AdminActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    itemView.getContext().startActivity(intent);
+                                    if (adapter.getItemCount() < 1) {
+                                        // Redirige a MenuPrincipalActivity si no hay más elementos
+                                        Intent intent = new Intent(itemView.getContext(), AdminActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("establecimiento", establecimiento);
+                                        itemView.getContext().startActivity(intent);
+                                    }else {
+                                        Intent intent = new Intent(itemView.getContext(), OrdenActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.putExtra("establecimiento", establecimiento);
+                                        itemView.getContext().startActivity(intent);
+
+                                    }
+
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
