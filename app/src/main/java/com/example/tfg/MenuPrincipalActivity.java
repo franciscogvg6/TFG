@@ -64,7 +64,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     Button btn_perfil;
 
-    String establecimiento;
+    String establecimiento, mesa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +110,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
 */
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
 
 
 
@@ -149,7 +150,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
         // Configurar el RecyclerView de productos
         productosList = new ArrayList<>();
-        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
+        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento, mesa);
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(productoAdapter);
 
@@ -283,10 +284,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
                     String foto = snapshot.child("Foto").getValue(String.class);
                     String categoria = snapshot.child("Categoria").getValue(String.class);
                     String pid = snapshot.child("pid").getValue(String.class);
-                    String fecha = snapshot.child("fecha").getValue(String.class);
-                    String hora = snapshot.child("hora").getValue(String.class);
                     Log.d("FirebaseData", "Nombre: " + nombre + ", Precio: " + precio + ", Foto: " + foto + ", Categoria: " + categoria);
-                    Producto producto = new Producto(nombre,precio,foto,categoria,pid,fecha,hora,cantidad);
+                    Producto producto = new Producto(nombre,precio,foto,categoria,pid,cantidad);
                     productosList.add(producto);
                 }
                 productoAdapter.notifyDataSetChanged();
@@ -307,12 +306,14 @@ public class MenuPrincipalActivity extends AppCompatActivity {
     private void irAPerfil() {
         Intent i = new Intent(this, PerfilActivity.class);
         i.putExtra("establecimiento", establecimiento);
+        i.putExtra("mesa", mesa);
         startActivity(i);
     }
 
     private void irACarrito() {
         Intent i = new Intent(this, CarritoActivity.class);
         i.putExtra("establecimiento", establecimiento);
+        i.putExtra("mesa", mesa);
         startActivity(i);
     }
 

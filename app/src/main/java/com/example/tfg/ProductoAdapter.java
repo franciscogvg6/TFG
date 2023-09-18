@@ -30,12 +30,13 @@ import java.util.ArrayList;
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
     private ArrayList<Producto> productosList;
     private int layout;
-    private String establecimiento;
+    private String establecimiento, mesa;
 
-    public ProductoAdapter(ArrayList<Producto> productosList, int layout, String establecimiento) {
+    public ProductoAdapter(ArrayList<Producto> productosList, int layout, String establecimiento, String mesa) {
         this.productosList = productosList;
         this.layout = layout;
         this.establecimiento = establecimiento;
+        this.mesa = mesa;
 
     }
 
@@ -66,6 +67,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                 Intent intent = new Intent(v.getContext(), ProductoDetallesActivity.class);
                 intent.putExtra("pid", producto.getPid());
                 intent.putExtra("establecimiento", establecimiento);
+                intent.putExtra("mesa", mesa);
                 v.getContext().startActivity(intent);
             }
         });

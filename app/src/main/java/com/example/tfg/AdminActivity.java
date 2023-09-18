@@ -220,10 +220,9 @@ public class AdminActivity extends AppCompatActivity {
                     String foto = snapshot.child("Foto").getValue(String.class);
                     String categoria = snapshot.child("Categoria").getValue(String.class);
                     String pid = snapshot.child("pid").getValue(String.class);
-                    String fecha = snapshot.child("fecha").getValue(String.class);
-                    String hora = snapshot.child("hora").getValue(String.class);
+
                     Log.d("FirebaseData", "Nombre: " + nombre + ", Precio: " + precio + ", Foto: " + foto + ", Categoria: " + categoria);
-                    Producto producto = new Producto(nombre,precio,foto,categoria,pid,fecha,hora,cantidad);
+                    Producto producto = new Producto(nombre,precio,foto,categoria,pid,cantidad);
                     productosList.add(producto);
                 }
                 productoAdapter.notifyDataSetChanged();
