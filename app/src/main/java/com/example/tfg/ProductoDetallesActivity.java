@@ -123,9 +123,7 @@ public class ProductoDetallesActivity extends AppCompatActivity {
                     String nombre = snapshot.child("Nombre").getValue(String.class);
                     double precio = snapshot.child("Precio").getValue(Double.class);
                     String foto = snapshot.child("Foto").getValue(String.class);
-                    //productoNombre.setText(productos.getNombre());
-                    //productoPrecio.setText(String.valueOf(productos.getPrecio()));
-                    //Picasso.get().load(productos.getFoto()).into(productoImagen);
+
 
                     productoNombre.setText(nombre);
                     productoPrecio.setText(String.valueOf(precio));

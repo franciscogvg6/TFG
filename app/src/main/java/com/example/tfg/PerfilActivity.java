@@ -34,7 +34,7 @@ public class PerfilActivity extends AppCompatActivity {
     private EditText editTextLocalidad;
     private EditText editTextFechaNacimiento;
 
-    private String correo = "", establecimiento;
+    private String correo = "", establecimiento, mesa;
     private Button buttonEditar;
 
     private Button buttonEliminar;
@@ -45,6 +45,8 @@ public class PerfilActivity extends AppCompatActivity {
     private FirebaseUser mUser;
 
     private Button regresar;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class PerfilActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("Usuarios");
 
         establecimiento = getIntent().getStringExtra("establecimiento");
+        mesa = getIntent().getStringExtra("mesa");
 
         editTextEmail = findViewById(R.id.editTextTextPersonName8);
         editTextNombre = findViewById(R.id.editTextTextPersonName9);
@@ -216,6 +219,7 @@ public class PerfilActivity extends AppCompatActivity {
         Intent intent = new Intent(PerfilActivity.this, MenuPrincipalActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("establecimiento", establecimiento);
+        intent.putExtra("mesa", mesa);
         startActivity(intent);
         finish();
     }

@@ -71,44 +71,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_principal);
 
-/*
-        FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, pendingDynamicLinkData -> {
-                    if (pendingDynamicLinkData != null) {
-                        Uri deepLink = pendingDynamicLinkData.getLink();
 
-                        establecimiento = deepLink.getQueryParameter("establecimiento");
-                        String mesa = deepLink.getQueryParameter("mesa");
-
-                        System.out.println("Establecimiento: " + establecimiento);
-                        System.out.println("Mesa: " + mesa);
-
-
-
-                        obtenerCategoriasDesdeFirebase();
-                        Categoria categoriaInicial = new Categoria("Cervezas");
-                        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-                        obtenerProductosDesdeFirebase(categoriaInicial);
-
-
-
-
-                        //Intent intent3 = new Intent(this, CarritoActivity.class);
-                        //intent3.putExtra("establecimiento", establecimiento);
-                        //startActivity(intent3);
-
-                        productosList = new ArrayList<>();
-                        productoAdapter = new ProductoAdapter(productosList, R.layout.productos_render, establecimiento);
-                        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
-                        recyclerViewProductos.setAdapter(productoAdapter);
-                    }
-                })
-                .addOnFailureListener(this, e -> {
-
-                });
-
-*/
         establecimiento = getIntent().getStringExtra("establecimiento");
         mesa = getIntent().getStringExtra("mesa");
 
@@ -116,7 +79,6 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
 
 
-        //establecimientoRef = FirebaseDatabase.getInstance().getReference().child(establecimiento);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
@@ -140,8 +102,6 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         categoriasList = new ArrayList<>();
 
 
-        // Simular datos de prueba
-        //cargarDatosDePrueba();
 
         // Configurar el RecyclerView de categorías
         categoriaAdapter = new CategoriaAdapter(categoriasList, R.layout.rv_render);
@@ -170,9 +130,7 @@ public class MenuPrincipalActivity extends AppCompatActivity {
             }
         });
 
-        /*Categoria categoriaInicial = new Categoria("Cervezas");
-        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-        obtenerProductosDesdeFirebase(categoriaInicial);*/
+
 
         btn_cerrar_sesion = findViewById(R.id.button3);
         btn_perfil = findViewById(R.id.perfil);

@@ -53,6 +53,14 @@
                 android:layout_height="wrap_content"
                 android:text="Editar" />
 
+            <EditText
+                android:id="@+id/cantidad_disponible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cantidad"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@android:color/black" />
+
 
         </LinearLayout>
 

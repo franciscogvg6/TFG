@@ -63,36 +63,6 @@ public class AdminActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
 
-        /*FirebaseDynamicLinks.getInstance()
-                .getDynamicLink(getIntent())
-                .addOnSuccessListener(this, pendingDynamicLinkData -> {
-                    if (pendingDynamicLinkData != null) {
-                        Uri deepLink = pendingDynamicLinkData.getLink();
-
-                        establecimiento = deepLink.getQueryParameter("establecimiento");
-                        String mesa = deepLink.getQueryParameter("mesa");
-
-                        System.out.println("Establecimiento: " + establecimiento);
-                        System.out.println("Mesa: " + mesa);
-
-
-
-                        obtenerCategoriasDesdeFirebase();
-                        Categoria categoriaInicial = new Categoria("Cervezas");
-                        textViewCategoriaSeleccionada.setText(categoriaInicial.getNombre());
-                        obtenerProductosDesdeFirebase(categoriaInicial);
-
-
-                        recyclerViewProductos = findViewById(R.id.rv_productos);
-                        productosList = new ArrayList<>();
-                        productoAdapter = new ProductoAdapterAdmin(productosList, R.layout.productos_admin_render, establecimiento);
-                        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
-                        recyclerViewProductos.setAdapter(productoAdapter);
-                    }
-                })
-                .addOnFailureListener(this, e -> {
-
-                });*/
 
         establecimiento = getIntent().getStringExtra("establecimiento");
 

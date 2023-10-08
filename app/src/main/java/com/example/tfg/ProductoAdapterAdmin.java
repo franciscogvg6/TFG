@@ -41,22 +41,13 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         Producto producto = productosList.get(position);
         holder.nombreTextView.setText(producto.getNombre());
         holder.precioTextView.setText(String.valueOf(producto.getPrecio()));
+        holder.cantidadDisponibleTextView.setText("Cantidad disponible: " + String.valueOf(producto.getCantidad()) + " unidades");
 
 
 
 
         // Cargar la imagen utilizando AsyncTask
        new CargarImagenTask(holder.fotoImageView).execute(producto.getFoto());
-
-        holder.fotoImageView.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ProductoDetallesActivity.class);
-                intent.putExtra("pid", producto.getPid());
-                intent.putExtra("establecimiento", establecimiento);
-                v.getContext().startActivity(intent);
-            }
-        });
 
         holder.btn_editar.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -89,7 +80,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                Bitmap resizedBitmap = resizeBitmap(bitmap, 10, 10);
+                Bitmap resizedBitmap = resizeBitmap(bitmap, 100, 100);
                 imageView.setImageBitmap(resizedBitmap);
             } else {
                 // Manejar el error de carga de imagen
@@ -117,6 +108,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
         ImageView fotoImageView;
         TextView nombreTextView;
         TextView precioTextView;
+        TextView cantidadDisponibleTextView;
 
         Button btn_editar;
         public ProductoViewHolder(@NonNull View itemView) {
@@ -125,6 +117,7 @@ public class ProductoAdapterAdmin extends RecyclerView.Adapter<ProductoAdapterAd
             nombreTextView = itemView.findViewById(R.id.nombre);
             precioTextView = itemView.findViewById(R.id.precio);
             btn_editar = itemView.findViewById(R.id.btnGuardarCambios);
+            cantidadDisponibleTextView = itemView.findViewById(R.id.cantidad_disponible);
         }
     }
     public void updateProductos(ArrayList<Producto> productosList) {

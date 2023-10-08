@@ -97,7 +97,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                Bitmap resizedBitmap = resizeBitmap(bitmap, 10, 10);
+                Bitmap resizedBitmap = resizeBitmap(bitmap, 100, 100);
                 imageView.setImageBitmap(resizedBitmap);
             } else {
                 // Manejar el error de carga de imagen
