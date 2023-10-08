@@ -193,6 +193,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MenuPrincipalActivity.this, RegistrarActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra("establecimiento", establecimiento);
+        intent.putExtra("mesa", mesa);
         startActivity(intent);
         finish();
     }
@@ -201,6 +203,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         Intent intent = new Intent(MenuPrincipalActivity.this, PerfilActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("correo", correo);
+        intent.putExtra("establecimiento", establecimiento);
+        intent.putExtra("mesa", mesa);
         startActivity(intent);
         finish();
 
@@ -258,6 +262,8 @@ public class MenuPrincipalActivity extends AppCompatActivity {
 
     private void irALogin(){
         Intent i = new Intent(this, RegistrarActivity.class);
+        i.putExtra("establecimiento", establecimiento);
+        i.putExtra("mesa", mesa);
         startActivity(i);
     }
 

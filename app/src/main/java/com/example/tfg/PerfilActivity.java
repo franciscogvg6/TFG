@@ -221,7 +221,7 @@ public class PerfilActivity extends AppCompatActivity {
         intent.putExtra("establecimiento", establecimiento);
         intent.putExtra("mesa", mesa);
         startActivity(intent);
-        finish();
+
     }
 
 

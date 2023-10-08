@@ -113,6 +113,7 @@ public class CarritoActivity extends AppCompatActivity {
                                 if(i ==0){
                                     Intent intent = new Intent(CarritoActivity.this, ProductoDetallesActivity.class);
                                     intent.putExtra("establecimiento", establecimiento);
+                                    intent.putExtra("mesa", mesa);
                                     intent.putExtra("pid", model.getPid());
                                     startActivity(intent);
                                 }
